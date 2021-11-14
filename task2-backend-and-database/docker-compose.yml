@@ -1,0 +1,46 @@
+version: '3.7'
+services:
+  db:
+    container_name: postgres_container
+    image: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER} 
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD} 
+      POSTGRES_DB: ${POSTGRES_DB} 
+      PGDATA: /data/postgres
+
+    volumes:
+       - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - backendnetwork
+    restart: unless-stopped
+
+
+  django:
+    container_name: django_container
+    build: ./lib_catalog
+    ports:
+      - "8000:8000"
+    stdin_open: true
+    tty: true
+#    command: sh -c "python3 manage.py runserver 0.0.0.0:8000"
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+
+    networks:
+      - backendnetwork     
+    depends_on: 
+      - db
+#    restart: unless-stopped 
+  
+networks:
+  backendnetwork:
+    driver: bridge
+
+volumes:
+    postgres:
+
+#    volumes:
+#      - ./lib_catalog:/app/lib_catalog
+
