@@ -11,7 +11,7 @@ WORKDIR /frontend
 #COPY . .
 
 #RUN npm install
-RUN yarn add codecov --frozen-lockfile
+RUN yarn add codecov --frozen-lockfile --network-timeout 100000
 RUN yarn install --frozen-lockfile --network-timeout 100000
 
 #COPY . .
