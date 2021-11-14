@@ -2,15 +2,19 @@ FROM node:alpine
 
 ENV NODE_OPTIONS=--openssl-legacy-provider
 
-WORKDIR '/app'
+COPY ./frontend /frontend
 
-COPY package.json .
+WORKDIR /frontend
+
+#COPY package.json .
+
+#COPY . .
 
 #RUN npm install
 RUN yarn add codecov --frozen-lockfile
 RUN yarn install --frozen-lockfile --network-timeout 100000
 
-COPY . .
+#COPY . .
 
 EXPOSE 3000
 
