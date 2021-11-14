@@ -1,5 +1,7 @@
 # docker-homework
 
+https://github.com/asilnikov/docker_homework
+
 1 Лекция
 Написать Dockerfile для frontend располагается в директории /frontend, собрать и запустить
 
