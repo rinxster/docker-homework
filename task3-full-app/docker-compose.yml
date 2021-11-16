@@ -29,7 +29,8 @@ services:
 #    command: sh -c "python3 manage.py runserver 0.0.0.0:8000"
     command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     networks:
-      - backendnetwork     
+      - backendnetwork
+    restart: unless-stopped      
     depends_on: 
       - db
 
@@ -46,8 +47,10 @@ services:
     command: npm start
     networks:
       - frontendnetwork
+    restart: unless-stopped
     depends_on:
       - db
+    
 volumes:
     postgres:
 networks:
