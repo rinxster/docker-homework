@@ -1,0 +1,62 @@
+version: '3.7'
+services:
+  db:
+    container_name: postgres_container
+    image: localhost:5000/postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER} 
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD} 
+      POSTGRES_DB: ${POSTGRES_DB} 
+      PGDATA: /data/postgres
+
+    volumes:
+       - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - backendnetwork
+    restart: unless-stopped
+
+  django:
+    container_name: django_container
+    image: localhost:5000/python:3.8.3
+    build: 
+      context: ./lib_catalog
+      dockerfile: ./Dockerfile
+    ports:
+      - "8000:8000"
+    stdin_open: true
+    tty: true
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    networks:
+      - backendnetwork     
+    depends_on: 
+      - db
+    restart: unless-stopped
+
+
+  frontend:
+    container_name: frontend
+    image: localhost:5000/node:alpine
+    build:
+      context: .
+      dockerfile: ./frontend/Dockerfile
+    ports:
+      - 3000:3000
+    stdin_open: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    command: npm start
+    networks:
+      - frontendnetwork
+    depends_on:
+      - db
+    restart: unless-stopped
+
+volumes:
+    postgres:
+networks:
+  frontendnetwork:
+    driver: bridge
+  backendnetwork:
+    driver: bridge

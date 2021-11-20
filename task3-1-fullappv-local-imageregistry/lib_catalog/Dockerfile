@@ -1,0 +1,16 @@
+# pull official base image
+#FROM python:3.8.3
+FROM localhost:5000/python:3.8.3
+# set work directory
+WORKDIR ./lib_catalog
+# set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+# install dependencies
+RUN pip install --upgrade pip
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+# copy project
+COPY . .
+EXPOSE 8000
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
